@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulasi CBT Building Cleaning SSW</title>
+<style>
+:root{--bg:#eef1f6;--c:#fff;--t:#1b2333;--m:#5d6880;--p:#1f4fd8;--ok:#14803c;--no:#c62828;--b:#d3d9e6}
+@media(prefers-color-scheme:dark){:root{--bg:#0f131c;--c:#181e2c;--t:#e7ebf4;--m:#97a1b8;--b:#2a3550;--p:#6d93ff;--ok:#4ade80;--no:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t);font:16px/1.55 system-ui,"Noto Sans JP",sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px 16px 48px}
+h1{font-size:1.4rem;margin:8px 0}
+.card{background:var(--c);border:1px solid var(--b);border-radius:8px;padding:16px;margin:12px 0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--p);outline-offset:2px}
+.btn{background:var(--p);color:#fff;border:0;border-radius:6px;padding:10px 18px}
+.btn.g{background:none;color:var(--t);border:1px solid var(--b)}
+.btn:disabled{opacity:.4;cursor:default}
+.opt{display:block;width:100%;text-align:left;background:var(--c);border:1px solid var(--b);border-radius:6px;padding:12px;margin:8px 0}
+.opt.s{border:2px solid var(--p);background:color-mix(in srgb,var(--p) 12%,var(--c))}
+.top{display:flex;justify-content:space-between;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:1}
+.pal{display:flex;flex-wrap:wrap;gap:6px}
+.pal button{width:38px;height:38px;border-radius:6px;border:1px solid var(--b);background:var(--c)}
+.pal .d{background:var(--p);color:#fff;border-color:var(--p)}
+.pal .f{box-shadow:0 0 0 2px #f59e0b}
+.pal .c{border:2px solid var(--t);font-weight:700}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.m{color:var(--m);font-size:.9rem}.g1{color:var(--ok)}.r1{color:var(--no)}
+</style></head><body><main id="app"></main>
+<script>
+const $=s=>document.querySelector(s),sh=a=>{a=[...a];for(let i=a.length;i>1;){const j=Math.random()*i--|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const T=(q,v,e)=>({q,o:["Benar","Salah"],a:v?0:1,e,f:1}),M=(q,o,e)=>({q,o,e});
+/* M: jawaban benar selalu ditulis PERTAMA, urutan diacak saat ujian */
+const TH=[
+M("Apa tujuan utama pembersihan berkala (定期清掃)?",["Menghilangkan kotoran yang tak hilang saat pembersihan harian dan merawat bahan bangunan (mis. wax)","Menjaga kebersihan setiap hari saja","Hanya mengosongkan tempat sampah","Mengganti peralatan kerja"],"Hal. 11."),
+M("Mana yang BUKAN termasuk 5 prinsip pembersihan gedung?",["Pengetahuan tentang harga peralatan","Pengetahuan tentang bahan bangunan","Pengetahuan tentang kotoran dan detergen","Pengetahuan tentang cara kerja dan tindakan pencegahan"],"Hal. 12: bahan bangunan, kotoran, detergen, cara kerja, pencegahan."),
+M("Cara membungkuk (お辞儀) yang benar kepada pelanggan?",["Kaki dirapatkan, membungkuk dari pinggang sekitar 15°–45°","Cukup menganggukkan kepala","Membungkuk 90° dengan kaki dilebarkan","Membungkuk sambil tangan di saku"],"Hal. 13."),
+M("ホウレンソウ (hou-ren-sou) adalah singkatan dari...",["Lapor, hubungi, konsultasi","Hadir, libur, rapat","Rapi, bersih, aman","Hormat, ulang, sopan"],"Hal. 14: 報告・連絡・相談."),
+M("Pelanggan mengajukan keluhan (クレーム). Tindakan yang tepat?",["Tidak beralasan, catat isinya, minta maaf, segera lapor atasan","Membantah dengan menjelaskan alasan","Diam saja dan lanjut bekerja","Menyelesaikannya sendiri tanpa lapor"],"Hal. 14."),
+T("Jika tidak bisa masuk kerja karena sakit, harus menghubungi atau melapor ke perusahaan.",1,"Hal. 9."),
+T("Anting dan cincin boleh dipakai saat bekerja asalkan bersih.",0,"Hal. 10: dilepas untuk mencegah kecelakaan."),
+M("Kapan lobi dan koridor sebaiknya dibersihkan?",["Menghindari jam pelanggan datang","Tepat saat jam masuk kantor","Saat banyak orang lalu lalang","Kapan saja, tidak masalah"],"Hal. 16."),
+T("Partikel yang tak terlihat mata (virus, bakteri, jamur) bisa masuk ke paru-paru dan memengaruhi kesehatan.",1,"Hal. 21."),
+M("Mencuci tangan sebaiknya dilakukan selama...",["20 detik atau lebih dengan sabun","5 detik","10 detik tanpa sabun","Tidak perlu jika memakai sarung tangan"],"Hal. 59."),
+M("Detergen apa yang TIDAK boleh dicampur karena menghasilkan gas beracun?",["Berbasis klorin dan bersifat asam","Dua detergen netral","Detergen netral dan air","Detergen lantai dan air"],"Hal. 60."),
+M("Jenis kecelakaan terbanyak dalam pembersihan gedung?",["Terpeleset/jatuh (転倒), sekitar 40%","Tersengat listrik","Terjepit mesin","Keracunan gas"],"Hal. 60."),
+M("Menemukan jarum suntik bekas di lantai atau tempat sampah. Tindakan tepat?",["Ambil dengan penjepit atau lakban, lalu lapor atasan","Ambil dengan tangan telanjang","Buang bersama sampah biasa","Abaikan"],"Hal. 60."),
+M("Detergen masuk mata atau tertelan. Apa yang harus dilakukan?",["Segera ke rumah sakit","Menunggu sampai reda","Lanjut bekerja","Hanya minum air"],"Hal. 64."),
+M("Noda bekas gesekan tumit sepatu (ヒールマーク) tergolong kotoran...",["Larut minyak (油溶性)","Tak organik","Larut air","Infeksius"],"Hal. 63."),
+M("Manakah yang termasuk lantai elastis (弾性床材)?",["Vinil, linoleum, karet","Batu, keramik, beton","Parket dan gabus","Karpet ubin"],"Hal. 62."),
+M("Prinsip dasar urutan kerja pembersihan?",["Atas ke bawah, dalam ke luar, sempit ke luas, sedikit kotor ke banyak kotor","Bawah ke atas, luar ke dalam","Bagian paling kotor dulu","Bebas sesuka hati"],"Hal. 65."),
+T("Barang yang tak jelas sampah atau bukan, yang ada di dekat tempat sampah, tetap dibuang saja.",0,"Hal. 57: konsultasikan ke atasan."),
+T("Sebelum pulang, pastikan pekerjaan selesai dan lapor ke penanggung jawab, termasuk jika ada alat rusak.",1,"Hal. 9."),
+T("Wax (床維持剤) dioleskan untuk melindungi lantai dari kotoran dan menjaga kebersihannya.",1,"Hal. 65: tindakan pencegahan.")
+];
+const PR=[
+M("Alat untuk debu di lantai licin (vinil, linoleum)?",["Dust cloth mop atau penyedot debu","Pel basah dengan banyak air","Sikat dek","Penyedot basah"],"Hal. 19."),
+M("Alat untuk debu di lantai karpet?",["Penyedot debu khusus (upright)","Dust cloth mop","Pel basah","Sikat dek"],"Hal. 20, 39."),
+T("Pasang tanda lantai (フロアサイン) saat bekerja agar orang tahu area sedang dibersihkan.",1,"Hal. 18."),
+T("Saat meninggalkan kereta kerja, taruh di tengah jalur jalan agar mudah dijangkau.",0,"Hal. 17: hindari jalur jalan (歩行動線)."),
+M("Cara memegang sapu bebas (自在ぼうき)?",["Ujung gagang ditekan jempol tangan atas, kedua tangan berjarak 30–40 cm","Digenggam penuh seperti tongkat","Dipegang dekat sikat dengan satu tangan","Dipegang tanpa jempol"],"Hal. 22: jempol jadi bantalan jika menabrak orang."),
+M("Menyapu di tepi dinding sebaiknya...",["Membuat sudut sekitar 45° dan tidak menyentuh plint (幅木)","Menyapu rapat menempel plint","Menyapu cepat agar plint bersih","Mengangkat sapu tinggi"],"Hal. 23."),
+T("Saat menyapu, sapu diangkat dari lantai di tiap gerakan agar debu terbang pergi.",0,"Hal. 23: jangan dilepas dari lantai agar sampah tak berhamburan."),
+M("Menyapu tangga: sampah dikumpulkan...",["Dari kedua tepi ke tengah lalu dijatuhkan pelan","Dari tengah ke tepi","Dilempar ke bawah","Disapu keras ke bordes"],"Hal. 24."),
+M("Mengambil sampah dengan dustpan (文化ちりとり):",["Sikat dimasukkan sampai ke dalam dustpan membentuk lingkaran; ulangi sampai habis","Angkat dustpan lalu selesai","Sapu sekali lalu tinggalkan","Tuang sampah tanpa memeriksa sisa"],"Hal. 25."),
+M("Cara menggerakkan dust cloth mop?",["Maju sambil berjalan di area bersih, tanpa mengangkat atau mundur","Mundur sambil menggosok","Diangkat tiap beberapa langkah","Bebas maju mundur"],"Hal. 27."),
+M("Area tengah dengan dust cloth mop?",["Zigzag dari dalam menuju pintu masuk, lebar kepala bertumpuk sekitar 1/4","Dari pintu masuk ke dalam tanpa bertumpuk","Satu garis lurus","Memutar acak"],"Hal. 28."),
+T("Selesai memakai dust cloth, kain dilipat ke dalam agar sampah tak jatuh, lalu dibuang.",1,"Hal. 29."),
+M("Pel basah (モップ) digerakkan...",["Mundur sambil mengayun kiri-kanan agar tak menginjak bagian basah","Maju sambil menginjak area yang dipel","Diputar-putar di tempat","Ditekan sekuat tenaga"],"Hal. 30."),
+M("Warna mop untuk toilet?",["Merah","Putih","Biru","Hijau"],"Hal. 30: merah untuk toilet, putih untuk lainnya."),
+M("Setelah mengepel sekitar 2 meter, rumbai mop sebaiknya...",["Dibalik ke sisi yang bersih","Dilanjutkan tanpa dibalik","Dibasahi ulang tanpa diperas","Diganti dust cloth"],"Hal. 32."),
+M("Kecepatan menyedot dengan penyedot tipe pod (ポッド型)?",["Sekitar 2 detik per bolak-balik","Sekitar 10 detik","Sekitar 30 detik","Tidak ada patokan"],"Hal. 35."),
+T("Mencabut steker dilakukan dengan menarik kabelnya.",0,"Hal. 37: pegang steker."),
+M("Cara menggulung kabel penyedot debu?",["Diluruskan dulu, digulung tanpa terpuntir, steker di atas dan di luar lingkaran","Digulung asal agar cepat","Dililit kuat di badan mesin","Diinjak sampai lurus"],"Hal. 37."),
+M("Kantong kertas penyedot debu diganti saat...",["Terisi sekitar 2/3","Terisi 1/10","Sudah sobek","Tidak perlu diganti"],"Hal. 38."),
+M("Cara menyeka permukaan datar (meja) dengan handuk?",["Handuk dilipat 8, sudut dulu baru tengah, dibalik ke sisi bersih tiap usapan","Dipakai satu sisi sampai kotor","Dilipat dua saja","Dibasahi tanpa diperas"],"Hal. 40-41."),
+M("Menyeka kaca/cermin dengan handuk?",["Dari atas ke bawah satu goresan zigzag, bukan memutar","Memutar berulang-ulang","Dari bawah ke atas bergelombang","Menekan satu titik"],"Hal. 42."),
+M("Urutan pembersihan toilet yang benar?",["Tempat sampah/isi ulang → wastafel → urinal → kloset → lantai","Lantai → kloset → urinal → wastafel","Kloset → lantai → wastafel","Urinal → lantai → tempat sampah"],"Hal. 45: dari yang sedikit kotor ke banyak."),
+M("Tisu toilet atau sabun tangan diisi ulang saat sisa sekitar...",["1/3","1/10","Habis total","3/4"],"Hal. 46."),
+M("Sebelum membersihkan urinal (小便器), sensor (人感センサー) sebaiknya...",["Ditutup handuk","Dibasahi air","Dibiarkan terbuka","Dilepas"],"Hal. 48."),
+T("Saringan urinal (目皿) dilepas, dibersihkan di ember, dikembalikan, dan jangan sampai pecah.",1,"Hal. 49."),
+M("Membersihkan kloset (大便器) bagian dalam?",["Angkat dudukan, pad putih berdetergen, balik tepi (rim), trap disikat sampai dalam","Cukup disiram air","Dibersihkan dengan sikat lantai","Hanya bagian luar"],"Hal. 52."),
+M("Membersihkan lantai toilet?",["Disapu dulu, dipel dengan mop diperas kuat, terakhir dilap kering; jangan menabrak urinal","Disiram air banyak","Dipel basah lalu dibiarkan","Dipel dengan mop putih agar cepat kering"],"Hal. 55."),
+M("Polisher dan peralatannya sebaiknya diletakkan...",["Di atas matras pelindung (養生マット)","Langsung di lantai","Di tengah jalur jalan","Di mana saja"],"Hal. 66."),
+T("Sebelum melepas pad polisher, cabut steker dari stopkontak.",1,"Hal. 73."),
+M("Urutan pembersihan kaca?",["Oleskan detergen (shampoo) → angkat kotor (squeegee) → lap air dengan handuk","Squeegee → shampoo → handuk","Handuk kering → shampoo","Langsung squeegee tanpa detergen"],"Hal. 75.")
+];
+const MODES={t:["Teori (学科)",[TH],20],p:["Praktik (判断)",[PR],30],a:["Ujian penuh",[TH,PR],50]};
+let S;
+const fmt=s=>(s/60|0)+":"+String(s%60).padStart(2,"0");
+const prep=(L,sec)=>sh(L).map(x=>{if(x.f)return{...x,sec};const c=x.o[0],o=sh(x.o);return{...x,o,a:o.indexOf(c),sec}});
+function home(){let b={};try{b=JSON.parse(localStorage.cbt||"{}")}catch(e){}
+$("#app").innerHTML=`<h1>Simulasi CBT Building Cleaning (SSW)</h1><p class="m">Soal latihan buatan sendiri berdasarkan teks JBMA, bukan soal asli. Tiap soal bernilai 2 poin. Lulus jika skor tiap bagian minimal 60%.</p>`+Object.entries(MODES).map(([k,[n,,c]])=>`<div class="card"><b>${n}</b><div class="m">${c} soal, ${c} menit${b[k]!=null?`, skor terbaik ${b[k]}%`:""}</div><p><button class="btn" onclick="start('${k}')">Mulai</button></p></div>`).join("")}
+function start(k){const[,Ls,c]=MODES[k],qs=Ls.flatMap(L=>prep(L,L===TH?0:1));
+S={k,qs,r:qs.map(()=>-1),f:qs.map(()=>0),i:0,t:c*60};
+S.tm=setInterval(()=>{if(--S.t<=0)finish();else if($("#tm"))$("#tm").textContent=fmt(S.t)},1000);show()}
+function show(){const{qs,r,f,i}=S,q=qs[i];
+$("#app").innerHTML=`<div class="top"><b>Soal ${i+1} dari ${qs.length} (${q.sec?"Praktik":"Teori"})</b><b id="tm">${fmt(S.t)}</b></div>
+<div class="card"><p>${q.q}</p>${q.o.map((o,j)=>`<button class="opt${r[i]==j?" s":""}" onclick="pick(${j})">${"ABCD"[j]}. ${o}</button>`).join("")}</div>
+<div class="row"><button class="btn g" onclick="go(${i-1})" ${i?"":"disabled"}>Sebelumnya</button><button class="btn g" onclick="S.f[${i}]^=1;show()">${f[i]?"Lepas tanda":"Tandai"}</button><button class="btn g" onclick="go(${i+1})" ${i<qs.length-1?"":"disabled"}>Berikutnya</button><button class="btn" onclick="ask()">Selesai</button></div>
+<div class="card pal">${qs.map((_,j)=>`<button class="${r[j]>=0?"d ":""}${f[j]?"f ":""}${j==i?"c":""}" onclick="go(${j})">${j+1}</button>`).join("")}</div>`}
+function pick(j){S.r[S.i]=j;show()}
+function go(n){S.i=n;show()}
+function ask(){const u=S.r.filter(x=>x<0).length;if(confirm(u?u+" soal belum dijawab. Selesaikan ujian?":"Selesaikan ujian?"))finish()}
+function finish(){clearInterval(S.tm);const sc=[0,0],mx=[0,0];
+S.qs.forEach((q,i)=>{mx[q.sec]+=2;if(S.r[i]==q.a)sc[q.sec]+=2});
+const tot=sc[0]+sc[1],all=mx[0]+mx[1],pct=Math.round(100*tot/all),pass=[0,1].every(s=>!mx[s]||sc[s]>=mx[s]*.6);
+try{const b=JSON.parse(localStorage.cbt||"{}");b[S.k]=Math.max(b[S.k]||0,pct);localStorage.cbt=JSON.stringify(b)}catch(e){}
+const row=(n,s)=>mx[s]?`<p>${n}: <b>${sc[s]}/${mx[s]}</b> <b class="${sc[s]>=mx[s]*.6?"g1":"r1"}">${sc[s]>=mx[s]*.6?"Lulus":"Belum lulus"}</b></p>`:"";
+$("#app").innerHTML=`<h1>Hasil: <span class="${pass?"g1":"r1"}">${pass?"LULUS":"BELUM LULUS"}</span></h1><div class="card"><p>Total ${tot}/${all} (${pct}%)</p>${row("Teori",0)}${row("Praktik",1)}<button class="btn" onclick="home()">Kembali ke menu</button></div><h2>Pembahasan</h2>`+
+S.qs.map((q,i)=>{const ok=S.r[i]==q.a;return`<div class="card"><div class="m">No. ${i+1} (${q.sec?"Praktik":"Teori"})</div><p>${q.q}</p><div class="${ok?"g1":"r1"}">${S.r[i]<0?"Tidak dijawab":"Jawabanmu: "+q.o[S.r[i]]}</div>${ok?"":`<div>Jawaban benar: <b>${q.o[q.a]}</b></div>`}<div class="m">${q.e}</div></div>`}).join("");scrollTo(0,0)}
+home();
+</script></body></html>
